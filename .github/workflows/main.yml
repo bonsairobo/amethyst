@@ -38,7 +38,7 @@ jobs:
     name: Cargo test & clippy
     runs-on: ${{ matrix.os }}
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         os: [macOS-latest, windows-latest, ubuntu-latest]
         toolchain: [stable, nightly]
