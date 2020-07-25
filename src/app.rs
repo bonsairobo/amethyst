@@ -1,5 +1,4 @@
 //! The core engine framework.
-//! TEST
 
 use std::{env, marker::PhantomData, path::Path, sync::Arc, time::Duration};
 
