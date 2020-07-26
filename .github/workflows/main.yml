@@ -14,7 +14,7 @@ env:
 
 jobs:
 
-  testandclippy:
+  codechecks:
     name: Code Checks
     runs-on: ${{ matrix.os }}
     strategy:
@@ -29,6 +29,7 @@ jobs:
           FEATURES: vulkan
         - os: ubuntu-latest
           FEATURES: vulkan
+          RUSTC_WRAPPER: /usr/bin/sccache
 
     steps:
       - uses: actions/checkout@v2
@@ -36,7 +37,7 @@ jobs:
       - name: install linux deps
         run: |
           sudo apt update
-          sudo apt install gcc pkg-config openssl libasound2-dev cmake build-essential python3 libfreetype6-dev libexpat1-dev libxcb-composite0-dev libssl-dev libx11-dev
+          sudo apt install gcc pkg-config openssl libasound2-dev cmake build-essential python3 libfreetype6-dev libexpat1-dev libxcb-composite0-dev libssl-dev libx11-dev sccache
         if: contains(matrix.os, 'ubuntu')
 
       - name: install ${{ matrix.toolchain }} toolchain
@@ -47,20 +48,20 @@ jobs:
           components: rustfmt, clippy
           override: true
 
-      - name: cargo fmt
+      - name: run fmt
         uses: actions-rs/cargo@v1
         with:
           command: fmt
           args: --all -- --check
 
-      - name: cargo clippy amethyst
+      - name: run clippy
         uses: actions-rs/cargo@v1
         with:
           command: clippy
           args: --features=${{matrix.FEATURES}}
         if: contains(matrix.toolchain, 'stable')
 
-      - name: cargo test amethyst
+      - name: run tests
         uses: actions-rs/cargo@v1
         with:
           command: test
