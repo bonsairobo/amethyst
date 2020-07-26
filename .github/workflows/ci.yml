@@ -31,7 +31,7 @@ jobs:
           FEATURES: vulkan
         - os: ubuntu-latest
           FEATURES: vulkan
-          RUSTC_WRAPPER: /usr/local/bin/sccache
+          RUSTC_WRAPPER: ~/.bin/sccache
           SCCACHE_DIR: ~/sccache
 
     steps:
@@ -50,9 +50,9 @@ jobs:
         run: |
           sudo apt update
           sudo apt install gcc pkg-config openssl libasound2-dev cmake build-essential python3 libfreetype6-dev libexpat1-dev libxcb-composite0-dev libssl-dev libx11-dev
-          mkdir sccache
-          curl -fo /usr/local/bin/sccache https://ci-mirrors.rust-lang.org/rustc/2018-04-02-sccache-x86_64-unknown-linux-musl
-          chmod +x /usr/local/bin/sccache
+          mkdir ~/.bin
+          curl -fo ~/.bin/sccache https://ci-mirrors.rust-lang.org/rustc/2018-04-02-sccache-x86_64-unknown-linux-musl
+          chmod +x ~/.bin/sccache
         if: contains(matrix.os, 'ubuntu')
 
       - name: install macos deps
