@@ -14,28 +14,8 @@ env:
 
 jobs:
 
-  rustfmt:
-    runs-on: ubuntu-latest
-    name: cargo fmt
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: install stable toolchain
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          profile: minimal
-          components: rustfmt
-          override: true
-
-      - name: cargo fmt
-        uses: actions-rs/cargo@v1
-        with:
-          command: fmt
-          args: --all -- --check
-
-  test:
-    name: Cargo test & clippy
+  testandclippy:
+    name: Code Checks
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: true
@@ -64,11 +44,18 @@ jobs:
         with:
           toolchain: ${{ matrix.toolchain }}
           profile: minimal
+          components: rustfmt, clippy
           override: true
 
-      - name: install clippy
-        run: rustup component add clippy
-        if: contains(matrix.toolchain, 'stable')
+      - name: cargo fmt
+        uses: actions-rs/cargo@v1
+        with:
+          command: fmt
+          args: --all -- --check
+
+#      - name: install clippy
+#        run: rustup component add clippy
+#        if: contains(matrix.toolchain, 'stable')
 
       - name: cargo clippy amethyst
         uses: actions-rs/cargo@v1
