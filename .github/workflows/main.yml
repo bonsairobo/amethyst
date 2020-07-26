@@ -1,4 +1,4 @@
-name: Amethyst CI via GitHub Actions
+name: CI
 
 on:
   push:
@@ -21,7 +21,7 @@ jobs:
       fail-fast: true
       matrix:
         os: [macOS-latest, windows-latest, ubuntu-latest]
-        toolchain: [stable, nightly]
+        toolchain: [stable, beta, nightly]
         include:
         - os: macos-latest
           FEATURES: metal
@@ -52,10 +52,6 @@ jobs:
         with:
           command: fmt
           args: --all -- --check
-
-#      - name: install clippy
-#        run: rustup component add clippy
-#        if: contains(matrix.toolchain, 'stable')
 
       - name: cargo clippy amethyst
         uses: actions-rs/cargo@v1
