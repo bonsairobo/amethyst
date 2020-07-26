@@ -41,9 +41,9 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.sccache
-          key: ${{  runner.os  }}-sccache-${{ runner.toolchain }}-${{ hashFiles('**/Cargo.toml') }}
+          key: ${{  runner.os  }}-sccache-${{ matrix.toolchain }}-${{ hashFiles('**/Cargo.toml') }}
           restore-keys: |
-            ${{ runner.os }}-sccache-${{ runner.toolchain }}-
+            ${{ runner.os }}-sccache-${{ matrix.toolchain }}-
 
       - name: install linux deps
 # URL for sccache obtained from https://github.com/rust-lang/rust/blob/a4dd850720369d9e5b9df91820b23cddb2badc06/src/ci/docker/scripts/sccache.sh
