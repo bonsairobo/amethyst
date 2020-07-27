@@ -65,9 +65,9 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.sccache
-          key: ${{  runner.os  }}-sccache-${{ steps.install_toolchain.rustc_hash }}-${{ hashFiles('**/Cargo.toml') }}
+          key: ${{  runner.os  }}-sccache-${{ steps.install_toolchain.outputs.rustc_hash }}-${{ hashFiles('**/Cargo.toml') }}
           restore-keys: |
-            ${{ runner.os }}-sccache-${{ steps.install_toolchain.rustc_hash }}-
+            ${{ runner.os }}-sccache-${{ steps.install_toolchain.outputs.rustc_hash }}-
 
       - name: install rustfmt+clippy on stable
         run: |
