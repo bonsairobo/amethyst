@@ -37,14 +37,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: cache amethyst deps
-        uses: actions/cache@v2
-        with:
-          path: ~/.sccache
-          key: ${{  runner.os  }}-deps_cache-${{ matrix.toolchain }}-${{ hashFiles('**/Cargo.toml') }}
-          restore-keys: |
-            ${{ runner.os }}-deps_cache-${{ matrix.toolchain }}-
-
       - name: install linux deps
 # URL for sccache obtained from https://github.com/rust-lang/rust/blob/a4dd850720369d9e5b9df91820b23cddb2badc06/src/ci/docker/scripts/sccache.sh
         run: |
@@ -61,20 +53,36 @@ jobs:
         if: contains(matrix.os, 'macOS')
 
       - name: install ${{ matrix.toolchain }} toolchain
+        id: install-toolchain
         uses: actions-rs/toolchain@v1
         with:
           toolchain: ${{ matrix.toolchain }}
           profile: minimal
-          components: rustfmt, clippy
+          # Don't use a 'components:' entry--we don't need them with beta/nightly, plus nightly often doesn't have them
           override: true
 
-      - name: run fmt
+      - name: cache amethyst deps
+        uses: actions/cache@v2
+        with:
+          path: ~/.sccache
+          key: ${{  runner.os  }}-sccache-${{ steps.install-toolchain.rustc-hash }}-${{ hashFiles('**/Cargo.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-sccache-${{ steps.install-toolchain.rustc-hash }}-
+
+      - name: install rustfmt+clippy on stable
+        run: |
+          rustup component add rustfmt
+          rustup component add clippy
+        if: contains(matrix.toolchain, 'stable')
+
+      - name: run rustfmt on stable
         uses: actions-rs/cargo@v1
         with:
           command: fmt
           args: --all -- --check
+        if: contains(matrix.toolchain, 'stable')
 
-      - name: run clippy
+      - name: run clippy on stable
         uses: actions-rs/cargo@v1
         with:
           command: clippy
