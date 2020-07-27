@@ -35,7 +35,7 @@ pub struct MaterialPrefab {
     pub alpha_cutoff: f32,
     /// Clone handle only
     #[serde(skip)]
-    handle: Option<Handle<Material>>,
+    pub handle: Option<Handle<Material>>,
 }
 
 impl MaterialPrefab {
